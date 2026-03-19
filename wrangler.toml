@@ -7,5 +7,5 @@ compatibility_flags = ["nodejs_compat"]
 RECIPIENT = "0xe2fe2841d0a73873bbca32fbca0e80d483783e55"
 
 [[routes]]
-pattern = "github.tempflow.xyz/*"
+pattern = "github.tempflow.xyz"
 custom_domain = true
