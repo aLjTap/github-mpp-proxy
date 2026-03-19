@@ -1,0 +1,11 @@
+name = "github-mpp-proxy"
+main = "index.ts"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+RECIPIENT = "0xe2fe2841d0a73873bbca32fbca0e80d483783e55"
+
+[[routes]]
+pattern = "github.tempflow.xyz/*"
+custom_domain = true
