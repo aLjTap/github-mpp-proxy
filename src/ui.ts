@@ -4,6 +4,18 @@ export const html = /* html */ `<!DOCTYPE html>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GitHub MPP Proxy</title>
+  <meta name="description" content="Access the GitHub API via Tempo payments. No API keys. No accounts. Pay per request with USDC." />
+  <meta property="og:title" content="GitHub MPP Proxy" />
+  <meta property="og:description" content="Access the GitHub API via Tempo payments. No API keys. No accounts. Pay per request." />
+  <meta property="og:url" content="https://github.tempflow.xyz" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://github.tempflow.xyz/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="GitHub MPP Proxy" />
+  <meta name="twitter:description" content="Access the GitHub API via Tempo payments. No API keys. No accounts. Pay per request." />
+  <meta name="twitter:image" content="https://github.tempflow.xyz/og.png" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
