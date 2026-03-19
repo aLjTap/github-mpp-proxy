@@ -1,71 +1,113 @@
 # GitHub MPP Proxy
 
-Access the [GitHub REST API](https://docs.github.com/en/rest) using [Tempo](https://tempo.xyz) payments — no GitHub token needed.
+> Access the GitHub REST API with [Tempo](https://tempo.xyz) payments — no GitHub token needed.
 
-Built with [mppx](https://mpp.dev) for the Machine Payments Protocol (MPP). Live at `github.tempflow.xyz`.
+AI agents and CLI clients can query GitHub by paying per request using the [Machine Payments Protocol](https://mpp.dev). No API key management, no rate limit sharing, no sign-up required.
 
-## Usage
+**Live at [`github.tempflow.xyz`](https://github.tempflow.xyz)**
 
-Any agent or client with a Tempo wallet can query GitHub without managing API keys:
+---
+
+## How it works
+
+```
+your agent
+    │
+    │  tempo request -t https://github.tempflow.xyz/github/repos/facebook/react
+    ▼
+GitHub MPP Proxy          ← verifies Tempo payment ($0.001 USDC)
+    │
+    │  GET https://api.github.com/repos/facebook/react
+    ▼
+GitHub API                ← responds with repo data
+    │
+    ▼
+your agent gets the result
+```
+
+---
+
+## Quickstart
 
 ```bash
-# Install tempo CLI
+# 1. Install the Tempo CLI
 curl -fsSL https://tempo.xyz/install | bash
 
-# Get a repo
+# 2. Login (opens browser)
+tempo wallet login
+
+# 3. Start querying GitHub
 tempo request -t https://github.tempflow.xyz/github/repos/facebook/react
-
-# Search repositories
+tempo request -t https://github.tempflow.xyz/github/users/torvalds
 tempo request -t "https://github.tempflow.xyz/github/search/repositories?q=mppx"
-
-# List issues
-tempo request -t https://github.tempflow.xyz/github/repos/vercel/next.js/issues
 ```
+
+---
+
+## Endpoints
+
+| Method | Path | Price |
+|--------|------|-------|
+| GET | `/github/repos/:owner/:repo` | $0.001 |
+| GET | `/github/repos/:owner/:repo/issues` | $0.001 |
+| GET | `/github/repos/:owner/:repo/issues/:id` | $0.001 |
+| GET | `/github/repos/:owner/:repo/pulls` | $0.001 |
+| GET | `/github/repos/:owner/:repo/pulls/:id` | $0.001 |
+| GET | `/github/repos/:owner/:repo/commits` | $0.001 |
+| GET | `/github/repos/:owner/:repo/contents/*` | $0.001 |
+| GET | `/github/users/:username` | $0.001 |
+| GET | `/github/users/:username/repos` | $0.001 |
+| GET | `/github/orgs/:org/repos` | $0.001 |
+| GET | `/github/search/repositories` | $0.002 |
+| GET | `/github/search/issues` | $0.002 |
+| GET | `/github/search/code` | $0.002 |
+| GET | `/github/rate_limit` | free |
+
+---
 
 ## Service discovery
 
+The proxy exposes standard MPP discovery endpoints so agents can automatically understand what's available:
+
 ```bash
-# JSON
+# Human-readable overview
+curl https://github.tempflow.xyz/llms.txt
+
+# Machine-readable service index
 curl https://github.tempflow.xyz/discover
 
-# Markdown (for agents)
-curl https://github.tempflow.xyz/llms.txt
+# Full route details
+curl https://github.tempflow.xyz/discover/github.md
 ```
 
-## Endpoints & pricing
-
-| Route | Price |
-|---|---|
-| `GET /repos/:owner/:repo` | $0.001 |
-| `GET /repos/:owner/:repo/issues` | $0.001 |
-| `GET /repos/:owner/:repo/pulls` | $0.001 |
-| `GET /repos/:owner/:repo/commits` | $0.001 |
-| `GET /repos/:owner/:repo/contents/*` | $0.001 |
-| `GET /users/:username` | $0.001 |
-| `GET /users/:username/repos` | $0.001 |
-| `GET /search/repositories` | $0.002 |
-| `GET /search/issues` | $0.002 |
-| `GET /search/code` | $0.002 |
-| `GET /orgs/:org/repos` | $0.001 |
-| `GET /rate_limit` | free |
+---
 
 ## Deploy your own
 
+Fork this repo and deploy in minutes:
+
 ```bash
-git clone https://github.com/alikarkinsarac/github-mpp-proxy
+git clone https://github.com/aLjTap/github-mpp-proxy
 cd github-mpp-proxy
 bun install
 
-# Set secrets
-wrangler secret put GITHUB_TOKEN
-wrangler secret put MPP_SECRET_KEY
+# Add your GitHub token and a random secret key
+bunx wrangler secret put GITHUB_TOKEN
+bunx wrangler secret put MPP_SECRET_KEY
 
-# Deploy
+# Deploy to Cloudflare Workers
 bunx wrangler deploy
 ```
 
-## Stack
+You'll need:
+- A [GitHub personal access token](https://github.com/settings/tokens/new?scopes=public_repo) with `public_repo` scope
+- A [Cloudflare account](https://cloudflare.com) (free tier is enough)
+- A [Tempo wallet](https://wallet.tempo.xyz) to receive payments
 
-- [mppx](https://github.com/wevm/mppx) — MPP TypeScript SDK
-- [Cloudflare Workers](https://workers.cloudflare.com) — serverless runtime
+---
+
+## Built with
+
+- [mppx](https://github.com/wevm/mppx) — TypeScript SDK for the Machine Payments Protocol
+- [Cloudflare Workers](https://workers.cloudflare.com) — serverless edge runtime
 - [Tempo](https://tempo.xyz) — stablecoin payment network
